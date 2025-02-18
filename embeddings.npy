@@ -1,7 +1,0 @@
-embedding_dim = 512 # Simulating a 512-dimensional embedding space
-num_documents = len(documents)
-# Generating random embeddings for demonstration
-document_embeddings = np.random.rand(num_documents,
-embedding_dim).astype(np.float32)
-# Save embeddings as a NumPy file
-np.save("embeddings.npy", document_embeddings)
