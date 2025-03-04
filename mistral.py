@@ -27,3 +27,4 @@ respose = mistral(query)
 
 st.write("### Here are the results to your question:")
 st.write(respose)
+st.write("Let me know if you have any other questions :)")
