@@ -25,7 +25,7 @@ def chunk_text(text, chunk_size=512):
 # Function to get embeddings
 def get_text_embedding(list_txt_chunks):
     client = Mistral(api_key=api_key)
-    embeddings_batch_response = client.embeddings.create(model="mistral-embed", inputs=list_txt_chunks)
+    embeddings_batch_response = client.embeddings.create(model="mistral-large-2.1", inputs=list_txt_chunks)
     return embeddings_batch_response.data
 
 # Function to search for similar chunks using scikit-learn
@@ -38,7 +38,7 @@ def search_similar_chunks(query_embedding, embeddings, k=2):
 def generate_response(prompt):
     client = Mistral(api_key=api_key)
     messages = [UserMessage(content=prompt)]
-    chat_response = client.chat.complete(model="mistral-large-latest", messages=messages)
+    chat_response = client.chat.complete(model="mistral-large-2.1", messages=messages)
     return chat_response.choices[0].message.content
 
 # Streamlit app
