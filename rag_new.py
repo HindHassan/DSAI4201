@@ -7,7 +7,8 @@ from sklearn.metrics.pairwise import euclidean_distances
 from mistralai import Mistral, UserMessage
 
 # Set up the API key
-api_key = os.getenv("MISTRAL_API_KEY")
+os.environ["MISTRAL_API_KEY"] = "CYg5ae9wMYxKUJbdjkrcYvC75JsOcr8C"
+api_key = os.environ.get('MISTRAL_API_KEY')}")
 
 # Function to fetch and process the webpage
 def fetch_and_process_webpage(url):
