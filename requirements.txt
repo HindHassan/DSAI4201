@@ -5,4 +5,3 @@ nltk
 gensim
 mistralai
 bs4
-faiss
