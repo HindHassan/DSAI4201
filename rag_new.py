@@ -14,7 +14,7 @@ api_key = os.environ.get('MISTRAL_API_KEY')
 base_url = "https://www.udst.edu.qa/about-udst/institutional-excellence-ie/udst-policies-and-procedures/"
 
 # List of policy categories
-policy_categories = [
+policies = [
     "Academic Annual Leave Policy",
     "Academic Appraisal Policy",
     "Academic Appraisal Procedure",
@@ -81,14 +81,14 @@ def generate_response(prompt):
 st.title("UDST Policies Chatbot")
 
 # User interface
-selected_category = st.selectbox("Select a policy category", policy_categories)
+selected_policy = st.selectbox("Select a policy", policies)
 
 # Dynamically construct the URL
-category_url = base_url + selected_category.lower().replace(" ", "-")
+policy_url = base_url + selected_policy.lower().replace(" ", "-")
 
 # Fetch and process the webpage based on the selected category
 try:
-    text = fetch_and_process_webpage(category_url)
+    text = fetch_and_process_webpage(policy_url)
     chunks = chunk_text(text)
 
     # Get embeddings
