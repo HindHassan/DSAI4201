@@ -10,6 +10,41 @@ from mistralai import Mistral, UserMessage
 os.environ["MISTRAL_API_KEY"] = "CYg5ae9wMYxKUJbdjkrcYvC75JsOcr8C"
 api_key = os.environ.get('MISTRAL_API_KEY')
 
+# Original base URL
+base_url = "https://www.udst.edu.qa/about-udst/institutional-excellence-ie/udst-policies-and-procedures/"
+
+# List of policy categories
+policy_categories = [
+    "Academic Annual Leave Policy",
+    "Academic Appraisal Policy",
+    "Academic Appraisal Procedure",
+    "Academic Credentials Policy",
+    "Academic Freedom Policy",
+    "Academic Members’ Retention Policy",
+    "Academic Professional Development",
+    "Academic Qualifications Policy",
+    "Credit Hour Policy",
+    "Intellectual Property Policy",
+    "Joint Appointment Policy",
+    "Program Accreditation Policy",
+    "Examination Policy",
+    "Student Conduct Policy",
+    "Student Conduct Procedure",
+    "Academic Schedule Policy",
+    "Academic Scheduling Procedure",
+    "Student Attendance Policy",
+    "Student Attendance Procedure",
+    "Student Appeals Policy",
+    "Academic Standing Policy",
+    "Academic Standing Procedure",
+    "Transfer Policy",
+    "Admissions Policy",
+    "Admissions Procedure",
+    "Final Grade Policy",
+    "Final Grade Procedure",
+    "Registration Policy",
+]
+
 # Function to fetch and process the webpage
 def fetch_and_process_webpage(url):
     response = requests.get(url)
@@ -45,31 +80,39 @@ def generate_response(prompt):
 # Streamlit app
 st.title("UDST Policies Chatbot")
 
-# Fetch and process the webpage
-url = "https://www.udst.edu.qa/about-udst/institutional-excellence-ie/policies-and-procedures/sport-and-wellness-facilities-and"
-text = fetch_and_process_webpage(url)
-chunks = chunk_text(text)
-
-# Get embeddings
-text_embeddings = get_text_embedding(chunks)
-embeddings = np.array([text_embedding.embedding for text_embedding in text_embeddings])
-
 # User interface
-policy = st.selectbox("Select a policy", ["Sport and Wellness Facilities", "Other Policy"])
-query = st.text_input("Enter your query")
+selected_category = st.selectbox("Select a policy category", policy_categories)
 
-if st.button("Submit"):
-    question_embeddings = np.array([get_text_embedding([query])[0].embedding])
-    similar_indices = search_similar_chunks(question_embeddings[0], embeddings)
-    retrieved_chunk = [chunks[i] for i in similar_indices]
-    prompt = f"""
-    Context information is below.
-    ---------------------
-    {retrieved_chunk}
-    ---------------------
-    Given the context information and not prior knowledge, answer the query.
-    Query: {query}
-    Answer:
-    """
-    response = generate_response(prompt)
-    st.text_area("Answer", response, height=200)
+# Dynamically construct the URL
+category_url = base_url + selected_category.lower().replace(" ", "-")
+st.write(f"Fetching content from: {category_url}")
+
+# Fetch and process the webpage based on the selected category
+try:
+    text = fetch_and_process_webpage(category_url)
+    chunks = chunk_text(text)
+
+    # Get embeddings
+    text_embeddings = get_text_embedding(chunks)
+    embeddings = np.array([text_embedding.embedding for text_embedding in text_embeddings])
+
+    # User query
+    query = st.text_input("Enter your query")
+
+    if st.button("Submit"):
+        question_embeddings = np.array([get_text_embedding([query])[0].embedding])
+        similar_indices = search_similar_chunks(question_embeddings[0], embeddings)
+        retrieved_chunk = [chunks[i] for i in similar_indices]
+        prompt = f"""
+        Context information is below.
+        ---------------------
+        {retrieved_chunk}
+        ---------------------
+        Given the context information and not prior knowledge, answer the query.
+        Query: {query}
+        Answer:
+        """
+        response = generate_response(prompt)
+        st.text_area("Answer", response, height=200)
+except Exception as e:
+    st.error(f"Failed to fetch or process the webpage: {e}")
