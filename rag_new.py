@@ -85,7 +85,6 @@ selected_category = st.selectbox("Select a policy category", policy_categories)
 
 # Dynamically construct the URL
 category_url = base_url + selected_category.lower().replace(" ", "-")
-st.write(f"Fetching content from: {category_url}")
 
 # Fetch and process the webpage based on the selected category
 try:
